@@ -1,3 +1,7 @@
+mod ast;
+
+pub use ast::*;
+
 struct Compiler {
     last_elm_end_line: u32,
     decorate: Vec<String>,
