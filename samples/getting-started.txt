@@ -1,0 +1,30 @@
+[* [Create a Scrapbox project for free https://scrapbox.io/product]]
+
+[* Learn to use Scrapbox]
+	Read about [Editing basics]
+	Learn [Syntax] for outlining, styling, and embedding content
+	See [Key features] for an overview of what makes Scrapbox unique
+	Read [FAQ]s for more
+
+[* See examples]
+	Read [/customer-stories] to see how some people are using Scrapbox
+ Check out our [Examples] 
+ See [More ways to use scrapbox]
+ Learn about our philosophy on [/scrapblog]
+ Want to visit Kyoto, Japan? See our [/kyotoguide] for recommendations and tips
+
+[* Start your first project]
+ [Create a project https://scrapbox.io/product] then add a [Profile page] with an [image].
+  With this you can add your [icon] on any line of any page to make a [Comment].
+ Create a tasks page and list up things you'd like to do
+	 Create related pages for problems you have, goals, or discussions
+	Check out some of the examples below to get more ideas
+
+
+[[Customize]]
+	Customize colors and add your own CSS with custom [themes]
+	Add your own [Userscript]
+
+
+[[Japanese Help - 日本語版]]
+[/help-jp]
