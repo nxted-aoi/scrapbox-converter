@@ -1,6 +1,8 @@
-mod ast;
-
 pub use ast::*;
+
+mod ast;
+mod parser;
+mod visitor;
 
 struct Compiler {
     last_elm_end_line: u32,

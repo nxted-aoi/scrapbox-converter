@@ -5,7 +5,7 @@ pub struct Page {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Line {
-    pub lines: Vec<Syntax>,
+    pub items: Vec<Syntax>,
 }
 
 #[derive(Debug, Clone, PartialEq)]
