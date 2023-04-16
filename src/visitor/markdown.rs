@@ -67,7 +67,7 @@ impl Visitor for MarkdownGen {
     }
 
     fn visit_hashtag(&mut self, hashtag: &HashTag) -> Option<TransformCommand> {
-        self.document.push_str(&format!("#{}", hashtag.value));
+        self.document.push_str(&format!("[#{t}](#{t}.md)", t = hashtag.value));
         None
     }
 
