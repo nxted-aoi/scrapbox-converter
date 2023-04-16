@@ -1,31 +1,23 @@
 pub use ast::*;
+use parser::page;
+use visitor::{
+    markdown::{MarkdownGen, MarkdownPass},
+    Visitor,
+};
 
 mod ast;
 mod parser;
 mod visitor;
 
-struct Compiler {
-    last_elm_end_line: u32,
-    decorate: Vec<String>,
-}
-
-impl Compiler {
-    fn new() -> Self {
-        Self {
-            last_elm_end_line: 1,
-            decorate: Vec::new(),
-        }
-    }
-
-    fn is_decorate_element() -> bool {
-        true
-    }
-
-    fn compile() -> String {
-        "".to_string()
-    }
-}
-
 fn main() {
-    println!("Hello, world!");
+    let input = "";
+
+    let (_, mut p) = page(input).unwrap();
+    let mut pass = MarkdownPass {
+        h1_level: 3,
+        bold_to_h: true,
+    };
+    pass.visit(&mut p);
+    let mut visitor = MarkdownGen::new();
+    visitor.generate(&mut p);
 }

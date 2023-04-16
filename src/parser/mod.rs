@@ -3,7 +3,7 @@ use std::convert::identity;
 use nom::{
     branch::alt,
     bytes::complete::{tag, take_until, take_while},
-    character::complete::char,
+    character::complete::{char, space0},
     combinator::{map, opt, peek},
     error::{ParseError, VerboseError},
     multi::many0,
@@ -27,8 +27,11 @@ pub fn line(input: &str) -> Result<&str, Line> {
     }
 
     let (input, _) = opt(char('\n'))(input)?;
-    map(many0(syntax), |c| Line {
-        items: c.into_iter().filter_map(identity).collect(),
+    map(many0(syntax), |c| {
+        Line::new(
+            LineKind::Normal,
+            c.into_iter().filter_map(identity).collect(),
+        )
     })(input)
 }
 
@@ -40,6 +43,9 @@ fn syntax(input: &str) -> Result<&str, Option<Syntax>> {
             }),
             map(bracketing, |s| Syntax {
                 kind: SyntaxKind::Bracket(s),
+            }),
+            map(external_link_plain, |s| Syntax {
+                kind: SyntaxKind::Bracket(Bracket::new(BracketKind::ExternalLink(s))),
             }),
             map(text, |s| Syntax {
                 kind: SyntaxKind::Text(s),
@@ -121,10 +127,11 @@ fn bracketing(input: &str) -> Result<&str, Bracket> {
     let (input, _) = peek(delimited(char('['), take_while(|c| c != ']'), char(']')))(input)?;
     map(
         alt((
+            map(decoration, |c| BracketKind::Decoration(c)),
             map(external_link, |c| BracketKind::ExternalLink(c)),
             map(internal_link, |c| BracketKind::InternalLink(c)),
         )),
-        |kind| Bracket { kind },
+        |kind| Bracket::new(kind),
     )(input)
 }
 
@@ -134,12 +141,22 @@ fn internal_link(input: &str) -> Result<&str, InternalLink> {
     Ok((input, InternalLink::new(text)))
 }
 
+fn external_link_plain(input: &str) -> Result<&str, ExternalLink> {
+    let (input, protocol) = alt((tag("https://"), tag("http://")))(input)?;
+    let (input, url) = take_until(" ")(input)?;
+    Ok((
+        input,
+        ExternalLink::new(None, &format!("{}{}", protocol, url)),
+    ))
+}
+
 // https://www.rust-lang.org/
 // [https://www.rust-lang.org/]
 // [https://www.rust-lang.org/ Rust]
 // [Rust https://www.rust-lang.org/]
 fn external_link(input: &str) -> Result<&str, ExternalLink> {
     fn url(input: &str) -> Result<&str, ExternalLink> {
+        let (input, _) = opt(space0)(input)?;
         let (input, protocol) = alt((tag("https://"), tag("http://")))(input)?;
         let (input, url) = take_until("]")(input)?;
         Ok((
@@ -179,7 +196,25 @@ fn image() {}
 
 fn icon() {}
 
-fn decoration() {}
+fn decoration(input: &str) -> Result<&str, Decoration> {
+    let (input, text) = delimited(char('['), take_while(|c| c != ']'), char(']'))(input)?;
+    let (rest, tokens) = take_while(|c| ['*', '/', '-'].contains(&c))(text)?;
+    let (text, _) = char(' ')(rest)?;
+
+    let mut bold = 0;
+    let mut italic = 0;
+    let mut strikethrough = 0;
+    for c in tokens.chars() {
+        match &c {
+            '*' => bold += 1,
+            '/' => italic += 1,
+            '-' => strikethrough += 1,
+            _ => {}
+        }
+    }
+
+    Ok((input, Decoration::new(text, bold, italic, strikethrough)))
+}
 
 fn bold() {}
 
