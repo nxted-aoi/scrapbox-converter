@@ -38,18 +38,14 @@ pub fn line(input: &str) -> Result<&str, Line> {
 fn syntax(input: &str) -> Result<&str, Option<Syntax>> {
     map(
         alt((
-            map(hashtag, |s| Syntax {
-                kind: SyntaxKind::HashTag(s),
+            map(hashtag, |s| Syntax::new(SyntaxKind::HashTag(s))),
+            map(bracketing, |s| Syntax::new(SyntaxKind::Bracket(s))),
+            map(external_link_plain, |s| {
+                Syntax::new(SyntaxKind::Bracket(Bracket::new(
+                    BracketKind::ExternalLink(s),
+                )))
             }),
-            map(bracketing, |s| Syntax {
-                kind: SyntaxKind::Bracket(s),
-            }),
-            map(external_link_plain, |s| Syntax {
-                kind: SyntaxKind::Bracket(Bracket::new(BracketKind::ExternalLink(s))),
-            }),
-            map(text, |s| Syntax {
-                kind: SyntaxKind::Text(s),
-            }),
+            map(text, |s| Syntax::new(SyntaxKind::Text(s))),
         )),
         Some,
     )(input)

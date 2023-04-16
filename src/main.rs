@@ -10,7 +10,7 @@ mod parser;
 mod visitor;
 
 fn main() {
-    let input = "";
+    let input = "[Hello World]";
 
     let (_, mut p) = page(input).unwrap();
     let mut pass = MarkdownPass {
@@ -19,5 +19,7 @@ fn main() {
     };
     pass.visit(&mut p);
     let mut visitor = MarkdownGen::new();
-    visitor.generate(&mut p);
+
+    let markdown = visitor.generate(&mut p);
+    println!("{markdown}");
 }
