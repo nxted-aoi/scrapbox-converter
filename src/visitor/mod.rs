@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
 use crate::ast::{
-    Bracket, BracketKind, Decoration, ExternalLink, HashTag, InternalLink, Line, Page, Syntax,
-    SyntaxKind, Text,Heading,
+    Bracket, BracketKind, Decoration, ExternalLink, HashTag, Heading, InternalLink, Line, Page,
+    Syntax, SyntaxKind, Text,
 };
 
 pub mod markdown;

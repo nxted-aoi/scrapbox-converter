@@ -17,7 +17,7 @@ impl Line {
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum LineKind {
-    Normal
+    Normal,
 }
 
 #[derive(Debug, Clone, PartialEq)]
