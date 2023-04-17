@@ -70,6 +70,7 @@ pub struct Syntax {
 pub enum SyntaxKind {
     HashTag(HashTag),
     Bracket(Bracket),
+    BlockQuote(BlockQuote),
     Text(Text),
 }
 
@@ -109,6 +110,19 @@ pub enum BracketKind {
     ExternalLink(ExternalLink),
     Emphasis(Emphasis),
     Heading(Heading),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct BlockQuote {
+    pub value: String,
+}
+
+impl BlockQuote {
+    pub fn new(value: &str) -> Self {
+        Self {
+            value: value.to_string(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Default)]
