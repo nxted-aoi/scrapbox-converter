@@ -3,7 +3,7 @@ use std::convert::identity;
 use nom::{
     branch::alt,
     bytes::complete::{tag, take_until, take_while},
-    character::complete::{char, space0, digit1},
+    character::complete::{char, digit1, space0},
     combinator::{map, opt, peek},
     error::{ParseError, VerboseError},
     multi::{many0, many1},
@@ -29,20 +29,20 @@ pub fn line(input: &str) -> Result<&str, Line> {
     let (input, _) = opt(char('\n'))(input)?;
     let (input, list) = list(input)?;
     if let Some(list) = &list {
-    map(many0(syntax), |c| {
-        Line::new(
-            LineKind::List(list.clone()),
-            c.into_iter().filter_map(identity).collect(),
-        )
-    })(input)
-} else {
-    map(many0(syntax), |c| {
-        Line::new(
-            LineKind::Normal,
-            c.into_iter().filter_map(identity).collect(),
-        )
-    })(input)
-}
+        map(many0(syntax), |c| {
+            Line::new(
+                LineKind::List(list.clone()),
+                c.into_iter().filter_map(identity).collect(),
+            )
+        })(input)
+    } else {
+        map(many0(syntax), |c| {
+            Line::new(
+                LineKind::Normal,
+                c.into_iter().filter_map(identity).collect(),
+            )
+        })(input)
+    }
 }
 
 fn syntax(input: &str) -> Result<&str, Option<Syntax>> {
@@ -247,17 +247,22 @@ fn commandline() {}
 fn helpfeel() {}
 
 // <tab>
-// <tab>1. 
+// <tab>1.
 fn list(input: &str) -> Result<&str, Option<List>> {
     let (input, tabs) = opt(many1(char('\t')))(input)?;
     let (input, decimal) = opt(terminated(digit1, tag(". ")))(input)?;
     if let Some(tabs) = tabs {
         let kind = match &decimal {
             Some(_) => ListKind::Decimal,
-            None=> ListKind::Disc,
+            None => ListKind::Disc,
         };
-        Ok((input, Some(List {level: tabs.len(), kind
-        })))
+        Ok((
+            input,
+            Some(List {
+                level: tabs.len(),
+                kind,
+            }),
+        ))
     } else {
         Ok((input, None))
     }

@@ -29,10 +29,7 @@ pub struct List {
 
 impl List {
     pub fn new(kind: ListKind, level: usize) -> Self {
-        Self {
-            kind,
-            level,
-        }
+        Self { kind, level }
     }
 
     pub fn disc(level: usize) -> Self {
