@@ -1,0 +1,17 @@
+[https://gyazo.com/4b9d77b1ca7b12995c50eef2888b7d3c]
+
+#lodging
+	[Amori villas]
+ 	    #quality #luxury but great experience
+
+#Restaurants
+	[Warong legong] #value
+ 	    Great mix of bbq meats, rice, and fresh vegetables
+
+#attractions
+	[Tanah lot temple]
+ 	    Right by the #beach
+
+#attractions
+	1. [Tanah lot temple]
+	2. Right by the #beach
