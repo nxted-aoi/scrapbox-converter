@@ -20,20 +20,14 @@ impl Default for MarkdownPass {
 }
 
 impl Visitor for MarkdownPass {
-    fn visit_bracket_decoration(
-        &mut self,
-        decoration: &crate::Decoration,
-    ) -> Option<TransformCommand> {
-        let h_level = (self.h1_level + 1).saturating_sub(decoration.bold);
+    fn visit_bracket_emphasis(&mut self, emphasis: &crate::Emphasis) -> Option<TransformCommand> {
+        let h_level = (self.h1_level + 1).saturating_sub(emphasis.bold);
         if h_level > 0
             && h_level <= self.h1_level
-            && (self.bold_to_h || (!self.bold_to_h && decoration.bold > 1))
+            && (self.bold_to_h || (!self.bold_to_h && emphasis.bold > 1))
         {
             Some(TransformCommand::Replace(Syntax::new(SyntaxKind::Bracket(
-                Bracket::new(BracketKind::Heading(Heading::new(
-                    &decoration.text,
-                    h_level,
-                ))),
+                Bracket::new(BracketKind::Heading(Heading::new(&emphasis.text, h_level))),
             ))))
         } else {
             None
@@ -67,7 +61,8 @@ impl Visitor for MarkdownGen {
     }
 
     fn visit_hashtag(&mut self, hashtag: &HashTag) -> Option<TransformCommand> {
-        self.document.push_str(&format!("[#{t}](#{t}.md)", t = hashtag.value));
+        self.document
+            .push_str(&format!("[#{t}](#{t}.md)", t = hashtag.value));
         None
     }
 
@@ -92,18 +87,15 @@ impl Visitor for MarkdownGen {
         None
     }
 
-    fn visit_bracket_decoration(
-        &mut self,
-        decoration: &crate::Decoration,
-    ) -> Option<TransformCommand> {
-        let mut tmp = decoration.text.clone();
-        if decoration.bold > 0 {
+    fn visit_bracket_emphasis(&mut self, emphasis: &crate::Emphasis) -> Option<TransformCommand> {
+        let mut tmp = emphasis.text.clone();
+        if emphasis.bold > 0 {
             tmp = format!("**{}**", tmp);
         }
-        if decoration.italic > 0 {
+        if emphasis.italic > 0 {
             tmp = format!("*{}*", tmp);
         }
-        if decoration.strikethrough > 0 {
+        if emphasis.strikethrough > 0 {
             tmp = format!("~~{}~~", tmp);
         }
         self.document.push_str(&tmp);

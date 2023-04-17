@@ -123,7 +123,7 @@ fn bracketing(input: &str) -> Result<&str, Bracket> {
     let (input, _) = peek(delimited(char('['), take_while(|c| c != ']'), char(']')))(input)?;
     map(
         alt((
-            map(decoration, |c| BracketKind::Decoration(c)),
+            map(emphasis, |c| BracketKind::Emphasis(c)),
             map(external_link, |c| BracketKind::ExternalLink(c)),
             map(internal_link, |c| BracketKind::InternalLink(c)),
         )),
@@ -192,7 +192,11 @@ fn image() {}
 
 fn icon() {}
 
-fn decoration(input: &str) -> Result<&str, Decoration> {
+// [*-/** emphasis]
+// [[Bold]] or [* Bold] or [*** Bold]
+// [/ italic]
+// [- strikethrough]
+fn emphasis(input: &str) -> Result<&str, Emphasis> {
     let (input, text) = delimited(char('['), take_while(|c| c != ']'), char(']'))(input)?;
     let (rest, tokens) = take_while(|c| ['*', '/', '-'].contains(&c))(text)?;
     let (text, _) = char(' ')(rest)?;
@@ -209,7 +213,7 @@ fn decoration(input: &str) -> Result<&str, Decoration> {
         }
     }
 
-    Ok((input, Decoration::new(text, bold, italic, strikethrough)))
+    Ok((input, Emphasis::new(text, bold, italic, strikethrough)))
 }
 
 fn bold() {}
@@ -233,3 +237,50 @@ fn commandline() {}
 fn helpfeel() {}
 
 fn bullet_points() {}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+
+    fn hashtag_test() {
+        assert_eq!(hashtag("#tag"), Ok(("", HashTag::new("tag"))));
+        assert_eq!(hashtag("#tag"), Ok(("", HashTag::new("tag"))));
+        assert_eq!(hashtag("#tag\n"), Ok(("\n", HashTag::new("tag"))));
+        assert_eq!(hashtag("#tag\n"), Ok(("\n", HashTag::new("tag"))));
+        assert_eq!(hashtag("#tag "), Ok((" ", HashTag::new("tag"))));
+        assert_eq!(hashtag("#tag "), Ok((" ", HashTag::new("tag"))));
+        assert_eq!(hashtag("#tag  "), Ok(("  ", HashTag::new("tag"))));
+        assert_eq!(hashtag("#tag  "), Ok(("  ", HashTag::new("tag"))));
+        assert_eq!(hashtag("####tag"), Ok(("", HashTag::new("###tag"))));
+        assert_eq!(hashtag("####tag"), Ok(("", HashTag::new("###tag"))));
+        assert_eq!(hashtag("#[tag"), Ok(("", HashTag::new("[tag"))));
+        assert_eq!(hashtag("#[tag"), Ok(("", HashTag::new("[tag"))));
+        // assert!(hashtag("#[tag]").is_err());
+        // assert!(hashtag("#[tag]").is_err());
+        // assert!(hashtag("# tag").is_err());
+        // assert!(hashtag("# tag").is_err());
+    }
+
+    #[test]
+    fn emphasis_test() {
+        assert_eq!(
+            emphasis("[* text]"),
+            Ok(("", Emphasis::bold_level("text", 1)))
+        );
+        assert_eq!(
+            emphasis("[***** text]"),
+            Ok(("", Emphasis::bold_level("text", 5)))
+        );
+        assert_eq!(emphasis("[/ text]"), Ok(("", Emphasis::italic("text"))));
+        assert_eq!(
+            emphasis("[- text]"),
+            Ok(("", Emphasis::strikethrough("text")))
+        );
+        assert_eq!(
+            emphasis("[*/*-* text]"),
+            Ok(("", Emphasis::new("text", 3, 1, 1)))
+        );
+    }
+}
