@@ -1,6 +1,6 @@
 use crate::{
     ast::{ExternalLink, HashTag, InternalLink, Page, Text},
-    Bracket, BracketKind, Heading, Syntax, SyntaxKind,
+    Bracket, BracketKind, Heading, LineKind, ListKind, Syntax, SyntaxKind,
 };
 
 use super::{TransformCommand, Visitor};
@@ -35,14 +35,28 @@ impl Visitor for MarkdownPass {
     }
 }
 
+pub struct MarkdownGenConfig {
+    indent: String,
+}
+
+impl Default for MarkdownGenConfig {
+    fn default() -> Self {
+        Self {
+            indent: "   ".to_string(),
+        }
+    }
+}
+
 pub struct MarkdownGen {
     document: String,
+    config: MarkdownGenConfig,
 }
 
 impl MarkdownGen {
-    pub fn new() -> Self {
+    pub fn new(config: MarkdownGenConfig) -> Self {
         Self {
             document: String::new(),
+            config,
         }
     }
 
@@ -55,6 +69,14 @@ impl MarkdownGen {
 impl Visitor for MarkdownGen {
     fn visit_page(&mut self, page: &mut Page) {
         for line in page.lines.iter_mut() {
+            if let LineKind::List(list) = &line.kind {
+                let indent = self.config.indent.repeat(list.level - 1);
+                match &list.kind {
+                    ListKind::Disc => self.document.push_str(&format!("{}* ", indent)),
+                    ListKind::Decimal => self.document.push_str(&format!("{}1. ", indent)),
+                    _ => {}
+                }
+            }
             self.visit_line(line);
             self.document.push_str("\n");
         }

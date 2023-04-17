@@ -18,6 +18,50 @@ impl Line {
 #[derive(Debug, Clone, PartialEq)]
 pub enum LineKind {
     Normal,
+    List(List),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct List {
+    pub kind: ListKind,
+    pub level: usize,
+}
+
+impl List {
+    pub fn new(kind: ListKind, level: usize) -> Self {
+        Self {
+            kind,
+            level,
+        }
+    }
+
+    pub fn disc(level: usize) -> Self {
+        Self {
+            kind: ListKind::Disc,
+            level,
+        }
+    }
+
+    pub fn decimal(level: usize) -> Self {
+        Self {
+            kind: ListKind::Decimal,
+            level,
+        }
+    }
+
+    pub fn alphabet(level: usize) -> Self {
+        Self {
+            kind: ListKind::Alphabet,
+            level,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum ListKind {
+    Disc,
+    Decimal,
+    Alphabet,
 }
 
 #[derive(Debug, Clone, PartialEq)]

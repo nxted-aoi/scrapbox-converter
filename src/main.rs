@@ -3,7 +3,7 @@ use std::{env, fs, io, path::Path};
 pub use ast::*;
 use parser::page;
 use visitor::{
-    markdown::{MarkdownGen, MarkdownPass},
+    markdown::{MarkdownGen, MarkdownGenConfig, MarkdownPass},
     Visitor,
 };
 
@@ -27,7 +27,7 @@ fn main() {
         bold_to_h: true,
     };
     pass.visit(&mut p);
-    let mut visitor = MarkdownGen::new();
+    let mut visitor = MarkdownGen::new(MarkdownGenConfig::default());
 
     let markdown = visitor.generate(&mut p);
     println!("{markdown}");
