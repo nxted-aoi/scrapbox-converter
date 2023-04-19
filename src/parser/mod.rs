@@ -32,14 +32,14 @@ pub fn line(input: &str) -> Result<&str, Line> {
         map(many0(syntax), |c| {
             Line::new(
                 LineKind::List(list.clone()),
-                c.into_iter().filter_map(identity).collect(),
+                c.into_iter().flatten().collect(),
             )
         })(input)
     } else {
         map(many0(syntax), |c| {
             Line::new(
                 LineKind::Normal,
-                c.into_iter().filter_map(identity).collect(),
+                c.into_iter().flatten().collect(),
             )
         })(input)
     }
@@ -82,7 +82,7 @@ fn text(input: &str) -> Result<&str, Text> {
         return Err(Err::Error(VerboseError::from_char(input, 'x')));
     }
 
-    if input.starts_with("#") {
+    if input.starts_with('#') {
         return Err(Err::Error(VerboseError::from_char(input, ' ')));
     }
 
@@ -121,10 +121,10 @@ fn text(input: &str) -> Result<&str, Text> {
             let text = Text {
                 value: consumed.to_string(),
             };
-            return Ok((input, text));
+            Ok((input, text))
         }
         None => {
-            return Err(Err::Error(VerboseError::from_char(input, ' ')));
+            Err(Err::Error(VerboseError::from_char(input, ' ')))
         }
     }
 }
@@ -134,9 +134,9 @@ fn bracketing(input: &str) -> Result<&str, Bracket> {
     let (input, _) = peek(delimited(char('['), take_while(|c| c != ']'), char(']')))(input)?;
     map(
         alt((
-            map(emphasis, |c| BracketKind::Emphasis(c)),
-            map(external_link, |c| BracketKind::ExternalLink(c)),
-            map(internal_link, |c| BracketKind::InternalLink(c)),
+            map(emphasis, BracketKind::Emphasis),
+            map(external_link, BracketKind::ExternalLink),
+            map(internal_link, BracketKind::InternalLink),
         )),
         |kind| Bracket::new(kind),
     )(input)
@@ -199,9 +199,9 @@ fn external_link(input: &str) -> Result<&str, ExternalLink> {
     delimited(char('['), alt((url_title, title_url, url)), char(']'))(input)
 }
 
-fn image() {}
+// fn image() {}
 
-fn icon() {}
+// fn icon() {}
 
 // [*-/** emphasis]
 // [[Bold]] or [* Bold] or [*** Bold]
@@ -227,13 +227,13 @@ fn emphasis(input: &str) -> Result<&str, Emphasis> {
     Ok((input, Emphasis::new(text, bold, italic, strikethrough)))
 }
 
-fn bold() {}
+// fn bold() {}
 
-fn italic() {}
+// fn italic() {}
 
-fn strilethrough() {}
+// fn strilethrough() {}
 
-fn math() {}
+// fn math() {}
 
 // `block_quote`
 fn block_quote(input: &str) -> Result<&str, BlockQuote> {
@@ -243,15 +243,15 @@ fn block_quote(input: &str) -> Result<&str, BlockQuote> {
     )(input)
 }
 
-fn code_block() {}
+// fn code_block() {}
 
-fn table() {}
+// fn table() {}
 
-fn quote() {}
+// fn quote() {}
 
-fn commandline() {}
+// fn commandline() {}
 
-fn helpfeel() {}
+// fn helpfeel() {}
 
 // <tab>
 // <tab>1.

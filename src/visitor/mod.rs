@@ -58,10 +58,10 @@ pub trait Visitor {
 
     fn visit_syntax(&mut self, value: &Syntax) -> Option<TransformCommand> {
         match &value.kind {
-            SyntaxKind::HashTag(v) => self.visit_hashtag(&v),
-            SyntaxKind::Bracket(v) => self.visit_bracket(&v),
-            SyntaxKind::BlockQuote(v) => self.visit_block_quote(&v),
-            SyntaxKind::Text(v) => self.visit_text(&v),
+            SyntaxKind::HashTag(v) => self.visit_hashtag(v),
+            SyntaxKind::Bracket(v) => self.visit_bracket(v),
+            SyntaxKind::BlockQuote(v) => self.visit_block_quote(v),
+            SyntaxKind::Text(v) => self.visit_text(v),
         }
     }
 
@@ -71,10 +71,10 @@ pub trait Visitor {
 
     fn visit_bracket(&mut self, value: &Bracket) -> Option<TransformCommand> {
         match &value.kind {
-            BracketKind::InternalLink(v) => self.visit_bracket_internal_link(&v),
-            BracketKind::ExternalLink(v) => self.visit_bracket_external_link(&v),
-            BracketKind::Emphasis(v) => self.visit_bracket_emphasis(&v),
-            BracketKind::Heading(v) => self.visit_bracket_heading(&v),
+            BracketKind::InternalLink(v) => self.visit_bracket_internal_link(v),
+            BracketKind::ExternalLink(v) => self.visit_bracket_external_link(v),
+            BracketKind::Emphasis(v) => self.visit_bracket_emphasis(v),
+            BracketKind::Heading(v) => self.visit_bracket_heading(v),
         }
     }
 
