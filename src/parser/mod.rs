@@ -49,6 +49,7 @@ fn syntax(input: &str) -> Result<&str, Option<Syntax>> {
     map(
         alt((
             map(hashtag, |s| Syntax::new(SyntaxKind::HashTag(s))),
+            map(block_quote, |s| Syntax::new(SyntaxKind::BlockQuote(s))),
             map(bracketing, |s| Syntax::new(SyntaxKind::Bracket(s))),
             map(external_link_plain, |s| {
                 Syntax::new(SyntaxKind::Bracket(Bracket::new(
@@ -234,7 +235,13 @@ fn strilethrough() {}
 
 fn math() {}
 
-fn block_quote() {}
+// `block_quote`
+fn block_quote(input: &str) -> Result<&str, BlockQuote> {
+    map(
+        delimited(char('`'), take_while(|c| c != '`'), char('`')),
+        |v| BlockQuote::new(v),
+    )(input)
+}
 
 fn code_block() {}
 
@@ -312,5 +319,13 @@ mod tests {
             emphasis("[*/*-* text]"),
             Ok(("", Emphasis::new("text", 3, 1, 1)))
         );
+    }
+
+    #[test]
+    fn test_block_quote() {
+        assert!(block_quote("123abc").is_err());
+        assert!(block_quote("`123abc").is_err());
+        assert_eq!(block_quote("`code`"), Ok(("", BlockQuote::new("code"))));
+        assert_eq!(block_quote("`code` test"), Ok((" test", BlockQuote::new("code"))));
     }
 }
