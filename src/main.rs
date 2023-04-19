@@ -17,7 +17,7 @@ fn main() {
     let file_path = &args[1];
     let file_name = &args[2];
 
-    let contents = read_file(Path::new(&file_path), &file_name).expect("can not read file");
+    let contents = read_file(Path::new(&file_path), file_name).expect("can not read file");
 
     // let input = "[** Hello World]";
 
