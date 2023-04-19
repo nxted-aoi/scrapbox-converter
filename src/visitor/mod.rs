@@ -13,6 +13,7 @@ pub mod markdown;
 #[derive(Debug)]
 pub enum TransformCommand {
     Replace(Syntax),
+    #[allow(dead_code)]
     Delete,
 }
 

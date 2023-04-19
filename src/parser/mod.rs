@@ -1,5 +1,3 @@
-use std::convert::identity;
-
 use nom::{
     branch::alt,
     bytes::complete::{tag, take_until, take_while},
@@ -133,7 +131,7 @@ fn bracketing(input: &str) -> Result<&str, Bracket> {
             map(external_link, BracketKind::ExternalLink),
             map(internal_link, BracketKind::InternalLink),
         )),
-        |kind| Bracket::new(kind),
+        Bracket::new,
     )(input)
 }
 
@@ -234,7 +232,7 @@ fn emphasis(input: &str) -> Result<&str, Emphasis> {
 fn block_quote(input: &str) -> Result<&str, BlockQuote> {
     map(
         delimited(char('`'), take_while(|c| c != '`'), char('`')),
-        |v| BlockQuote::new(v),
+        BlockQuote::new,
     )(input)
 }
 
