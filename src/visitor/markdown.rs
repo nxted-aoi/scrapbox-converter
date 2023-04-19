@@ -22,10 +22,7 @@ impl Default for MarkdownPass {
 impl Visitor for MarkdownPass {
     fn visit_bracket_emphasis(&mut self, emphasis: &crate::Emphasis) -> Option<TransformCommand> {
         let h_level = (self.h1_level + 1).saturating_sub(emphasis.bold);
-        if h_level > 0
-            && h_level <= self.h1_level
-            && (self.bold_to_h || (!self.bold_to_h && emphasis.bold > 1))
-        {
+        if (emphasis.bold > 1 || self.bold_to_h) && h_level <= self.h1_level && h_level > 0 {
             Some(TransformCommand::Replace(Syntax::new(SyntaxKind::Bracket(
                 Bracket::new(BracketKind::Heading(Heading::new(&emphasis.text, h_level))),
             ))))

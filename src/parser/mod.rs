@@ -37,10 +37,7 @@ pub fn line(input: &str) -> Result<&str, Line> {
         })(input)
     } else {
         map(many0(syntax), |c| {
-            Line::new(
-                LineKind::Normal,
-                c.into_iter().flatten().collect(),
-            )
+            Line::new(LineKind::Normal, c.into_iter().flatten().collect())
         })(input)
     }
 }
@@ -123,9 +120,7 @@ fn text(input: &str) -> Result<&str, Text> {
             };
             Ok((input, text))
         }
-        None => {
-            Err(Err::Error(VerboseError::from_char(input, ' ')))
-        }
+        None => Err(Err::Error(VerboseError::from_char(input, ' '))),
     }
 }
 
