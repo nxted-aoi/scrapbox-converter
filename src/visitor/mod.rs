@@ -1,9 +1,12 @@
 use std::collections::HashMap;
 
-use crate::{ast::{
-    Bracket, BracketKind, Emphasis, ExternalLink, HashTag, Heading, InternalLink, Line, Page,
-    Syntax, SyntaxKind, Text,
-}, BlockQuote};
+use crate::{
+    ast::{
+        Bracket, BracketKind, Emphasis, ExternalLink, HashTag, Heading, InternalLink, Line, Page,
+        Syntax, SyntaxKind, Text,
+    },
+    BlockQuote,
+};
 
 pub mod markdown;
 

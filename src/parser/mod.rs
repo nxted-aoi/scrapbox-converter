@@ -326,6 +326,9 @@ mod tests {
         assert!(block_quote("123abc").is_err());
         assert!(block_quote("`123abc").is_err());
         assert_eq!(block_quote("`code`"), Ok(("", BlockQuote::new("code"))));
-        assert_eq!(block_quote("`code` test"), Ok((" test", BlockQuote::new("code"))));
+        assert_eq!(
+            block_quote("`code` test"),
+            Ok((" test", BlockQuote::new("code")))
+        );
     }
 }
