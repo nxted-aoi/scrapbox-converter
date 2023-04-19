@@ -78,7 +78,7 @@ impl Visitor for MarkdownGen {
                 }
             }
             self.visit_line(line);
-            self.document.push_str("\n");
+            self.document.push('\n');
         }
     }
 
