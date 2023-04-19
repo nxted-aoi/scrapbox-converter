@@ -13,10 +13,8 @@ jobs:
         with:
           components: rustfmt, clippy
 
-      - uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: --all -- --check
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo fmt --all -- --check
 
       - uses: giraffate/clippy-action@v1
         with:
