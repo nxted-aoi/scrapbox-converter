@@ -99,7 +99,7 @@ impl Visitor for MarkdownGen {
             self.document
                 .push_str(&format!("[{}]({})", title, value.url));
         } else {
-            self.document.push_str(&format!("{}", value.url));
+            self.document.push_str(&value.url.to_string());
         }
         None
     }
@@ -129,12 +129,12 @@ impl Visitor for MarkdownGen {
     }
 
     fn visit_block_quote(&mut self, value: &crate::BlockQuote) -> Option<TransformCommand> {
-        self.document.push_str(&format!("`{}`", value.value));
+        self.document.push_str(&value.value.to_string());
         None
     }
 
     fn visit_text(&mut self, text: &Text) -> Option<TransformCommand> {
-        self.document.push_str(&format!("{}", text.value));
+        self.document.push_str(&text.value.to_string());
         None
     }
 }

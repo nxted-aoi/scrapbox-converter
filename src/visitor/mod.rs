@@ -46,11 +46,7 @@ pub trait Visitor {
         // Delete
         let mut i = 0;
         value.values.retain(|_| {
-            let retain = if let Some(TransformCommand::Delete) = commands.get(&i) {
-                false
-            } else {
-                true
-            };
+            let retain = !matches!(commands.get(&i), Some(TransformCommand::Delete));
             i += 1;
             retain
         });
