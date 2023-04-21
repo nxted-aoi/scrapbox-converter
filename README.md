@@ -14,9 +14,9 @@ cargo build
 cargo r *** ***
 ```
 
-Pass this arguments
-1st **_ = dir name
-2nd _** = file name with extensions
+Pass this arguments 
+1st *** = dir name  
+2nd *** = file name with extensions
 
 ## References
 
